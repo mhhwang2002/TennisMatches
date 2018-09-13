@@ -1,0 +1,12 @@
+{
+  "name": "@mhhwang2002/tennismatches",
+  "version": "1.0.0",
+  "description": "DB Management for Tennis Matches",
+  "main": "TennisMatches.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Moon Ho Hwang",
+  "license": "GNU LGPL",
+  "dependencies": {}
+}
