@@ -8,5 +8,7 @@
   },
   "author": "Moon Ho Hwang",
   "license": "GNU LGPL",
-  "dependencies": {}
+  "dependencies": {
+    "@mhhwang2002/mongograph": "^1.0.0"
+  }
 }
