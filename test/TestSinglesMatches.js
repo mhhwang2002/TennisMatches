@@ -53,7 +53,7 @@ describe('Grand Slam Men\'s Finals', function(){
 			let gdb = new MG.Graph(client, {print_out:true});
 			gdb.begin_profiling("Main");    
 			    let results = await gdb.insert(db_members, tbv_members, [{name:"Andy Murray"},{name:"Dominic Thiem"},{name:"Juan Martin del Potro"},
-			    	{name:"Kevin Anderson"}, {name:"Marin Cilic"}, {name:"Milos Raonic"}, {name:"Novak Djokovic"}, {name:"NRafael Nadal"},
+			    	{name:"Kevin Anderson"}, {name:"Marin Cilic"}, {name:"Milos Raonic"}, {name:"Novak Djokovic"}, {name:"Rafael Nadal"},
 			    	{name:"Roger Federer"}, {name:"Stan Wawrinka"}]);
 			    results = await gdb.get(db_members, tbv_members, {});
 				assert(results.length == 10);
@@ -107,6 +107,17 @@ describe('Grand Slam Men\'s Finals', function(){
 	 	}  
 	 }); 
 	  
+    console.log("Year \tTournament      \tWinner         \tRunner-up             \tScore"); 
+	console.log("2015 \tAustralian      \tNovak Djokovic \tAndy Murray           \t7-6, 6-7, 6-3, 6-0");
+	console.log("2015 \tFrench Open     \tStan Wawrinka  \tNovak Djokovic        \t4-6, 6-4, 6-3, 6-4");
+	console.log("2015 \tWimbledon       \tNovak Djokovic \tRoger Federer         \t7-6, 6-7, 6-4, 6-3");
+	console.log("2015 \tUP Open         \tNovak Djokovic \tRoger Federer         \t6-4, 5-7, 6-4, 6-4");
+
+	console.log("2016 \tAustralian Open \tNovak Djokovic \tAndy Murray           \t6-1, 7-5, 7-6");
+	console.log("2016 \tFrench Open     \tNovak Djokovic \tAndy Murray           \t3-6, 6-1, 6-2, 6-4");
+	console.log("2016 \tWimbledon       \tAndy Murray    \tMilos Raonic          \t6-4, 7-6, 7-6");
+	console.log("2016 \tUS Open         \tStan Wawrinka  \tNovak Djokovic        \t6-7(, 6-4, 7-5, 6-3");
+ 
 	it('Insert 2016 Grand Slam Men\'s Finals \n \
 		2016 \tAustralian Open \tNovak Djokovic \tAndy Murray           \t6-1, 7-5, 7-6\n \
 		2016 \tFrench Open     \tNovak Djokovic \tAndy Murray           \t3-6, 6-1, 6-2, 6-4\n \
@@ -143,43 +154,99 @@ describe('Grand Slam Men\'s Finals', function(){
 	 		assert(0);
 	 	}  
 	 }); 
-	console.log("Year \tTournament      \tWinner         \tRunner-up             \tScore"); 
-	console.log("2015 \tAustralian      \tNovak Djokovic \tAndy Murray           \t7-6, 6-7, 6-3, 6-0");
-	console.log("2015 \tFrench Open     \tStan Wawrinka  \tNovak Djokovic        \t4-6, 6-4, 6-3, 6-4");
-	console.log("2015 \tWimbledon       \tNovak Djokovic \tRoger Federer         \t7-6, 6-7, 6-4, 6-3");
-	console.log("2015 \tUP Open         \tNovak Djokovic \tRoger Federer         \t6-4, 5-7, 6-4, 6-4");
-
-	console.log("2016 \tAustralian Open \tNovak Djokovic \tAndy Murray           \t6-1, 7-5, 7-6");
-	console.log("2016 \tFrench Open     \tNovak Djokovic \tAndy Murray           \t3-6, 6-1, 6-2, 6-4");
-	console.log("2016 \tWimbledon       \tAndy Murray    \tMilos Raonic          \t6-4, 7-6, 7-6");
-	console.log("2016 \tUS Open         \tStan Wawrinka  \tNovak Djokovic        \t6-7(, 6-4, 7-5, 6-3");
-
-	console.log("2016 \tAustralian Open \tNovak Djokovic \tAndy Murray           \t6-1, 7-5, 7-6");
-	console.log("2016 \tFrench Open     \tNovak Djokovic \tAndy Murray           \t3-6, 6-1, 6-2, 6-4");
-	console.log("2016 \tWimbledon       \tAndy Murray    \tMilos Raonic          \t6-4, 7-6, 7-6");
-	console.log("2016 \tUS Open         \tStan Wawrinka  \tNovak Djokovic        \t6-7(, 6-4, 7-5, 6-3");
 	
 	console.log("2017 \tAustralian Open \tRoger Federer  \tRafael Nadal          \t6-4, 3-6, 6-1, 3-6, 6-3");
 	console.log("2017 \tFrench Open     \tRafael Nadal   \tStan Wawrinka         \t6-2, 6-3, 6-1");
-	console.log("2017 \tWimbledon       \tRoger Federer  \tMarin Čilić           \t6-3, 6-1, 6-4");
+	console.log("2017 \tWimbledon       \tRoger Federer  \tMarin Cilic           \t6-3, 6-1, 6-4");
 	console.log("2017 \tUS Open         \tRafael Nadal   \tKevin Anderson        \t6-3, 6-3, 6-4");
-
+    it('Insert 2017 Grand Slam Men\'s Finals \n \
+		2017 \tAustralian Open \tRoger Federer  \tRafael Nadal          \t6-4, 3-6, 6-1, 3-6, 6-3\n \
+		2017 \tFrench Open     \tRafael Nadal   \tStan Wawrinka         \t6-2, 6-3, 6-1\n \
+		2017 \tWimbledon       \tRoger Federer  \tMarin CiliC           \t6-3, 6-1, 6-4\n \
+		2017 \tUS Open         \tRafael Nadal   \tKevin Anderson        \t6-3, 6-3, 6-4" ', async() => {  
+		let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+	 	try{
+	 		let winer_id = get_id(_players, "Roger Federer"); assert(winer_id); 
+	 		let opponent_id = get_id(_players, "Rafael Nadal"); assert(opponent_id); 
+	 		let date = new Date(2017,0,1,0,0,0,0)// month counst from 0 not 1. 
+	 		let results = await tmatches.insert_singles_match(db_Australian_Open, tbv_tennis_matches, winer_id, [6,3,6,3,6], opponent_id, [4,6,1,6,3], date );
+	 		assert(results.length == 3); // one match two edges.
+	 	 
+	 		winer_id = get_id(_players, "Rafael Nadal"); assert(winer_id); 
+	 		opponent_id = get_id(_players, "Stan Wawrinka"); assert(opponent_id);  
+	 		date = new Date(2017,4,0,0,0,0,0)// month counst from 0 not 1. 
+	 		results = await tmatches.insert_singles_match(db_French_Open, tbv_tennis_matches, winer_id, [6,6,6], opponent_id, [2,3,1], date );
+	 		assert(results.length == 3); // one match two edges.
+	 	 
+	 		winer_id = get_id(_players, "Roger Federer"); assert(winer_id); 
+	 		opponent_id = get_id(_players, "Marin Cilic"); assert(opponent_id);  
+	 		date = new Date(2017,6,0,0,0,0,0)// month counst from 0 not 1. 
+	 		results = await tmatches.insert_singles_match(db_Wimbledon, tbv_tennis_matches, winer_id, [6,6,6], opponent_id, [3,1,4], date );
+	 		assert(results.length == 3); // one match two edges. 
+	 		
+	 		winer_id = get_id(_players, "Rafael Nadal"); assert(winer_id); 
+	 		opponent_id = get_id(_players, "Kevin Anderson"); assert(opponent_id);  
+	 		date = new Date(2017,8,0,0,0,0,0)// month counst from 0 not 1. 
+	 		results = await tmatches.insert_singles_match(db_US_Open, tbv_tennis_matches, winer_id, [6,6,6], opponent_id, [3,3,4], date );
+	 		assert(results.length == 3); // one match two edges.
+	 	}
+	 	catch(err){
+	 		console.log(err);
+	 		assert(0);
+	 	}  
+	 }); 
 	console.log("2018 \tAustralian Open \tRoger Federer  \tMarin Cilic           \t6-2, 6-7, 6-3, 3-6, 6-1"); 
 	console.log("2018 \tFrench Open     \tRafael Nadal   \tDominic Thiem         \t6-4, 6-3, 6-2");
 	console.log("2018 \tWimbledon       \tNovak Djokovic \tKevin Anderson        \t6-2, 6-2, 7-6");
-	console.log("2018 \tUS Open         \tNovak Djokovic \tJuan Martín del Potro \t6-3, 7-6, 6-4");
+	console.log("2018 \tUS Open         \tNovak Djokovic \tJuan Martin del Potro \t6-3, 7-6, 6-4");
+	it('Insert 2018 Grand Slam Men\'s Finals \n \
+		2018 \tAustralian Open \tRoger Federer  \tMarin Cilic           \t6-2, 6-7, 6-3, 3-6, 6-1\n \
+		2018 \tFrench Open     \tRafael Nadal   \tDominic Thiem         \t6-4, 6-3, 6-2\n \
+		2018 \tWimbledon       \tNovak Djokovic \tKevin Anderson        \t6-2, 6-2, 7-6\n \
+		2018 \tUS Open         \tNovak Djokovic \tJuan Martin del Potro \t6-3, 7-6, 6-4" ', async() => {  
+		let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+	 	try{
+	 		let winer_id = get_id(_players, "Roger Federer"); assert(winer_id); 
+	 		let opponent_id = get_id(_players, "Marin Cilic"); assert(opponent_id); 
+	 		let date = new Date(2018,0,1,0,0,0,0)// month counst from 0 not 1. 
+	 		let results = await tmatches.insert_singles_match(db_Australian_Open, tbv_tennis_matches, winer_id, [6,6,6,3,6], opponent_id, [2,7,3,6,1], date );
+	 		assert(results.length == 3); // one match two edges.
+	 	 
+	 		winer_id = get_id(_players, "Rafael Nadal"); assert(winer_id); 
+	 		opponent_id = get_id(_players, "Dominic Thiem"); assert(opponent_id);  
+	 		date = new Date(2018,4,0,0,0,0,0)// month counst from 0 not 1. 
+	 		results = await tmatches.insert_singles_match(db_French_Open, tbv_tennis_matches, winer_id, [6,6,6], opponent_id, [4,3,2], date );
+	 		assert(results.length == 3); // one match two edges.
+	 	 
+	 		winer_id = get_id(_players, "Novak Djokovic"); assert(winer_id); 
+	 		opponent_id = get_id(_players, "Kevin Anderson"); assert(opponent_id);  
+	 		date = new Date(2018,6,0,0,0,0,0)// month counst from 0 not 1. 
+	 		results = await tmatches.insert_singles_match(db_Wimbledon, tbv_tennis_matches, winer_id, [6,6,7], opponent_id, [2,2,6], date );
+	 		assert(results.length == 3); // one match two edges. 
+	 		
+	 		winer_id = get_id(_players, "Novak Djokovic"); assert(winer_id); 
+	 		opponent_id = get_id(_players, "Juan Martin del Potro"); assert(opponent_id);  
+	 		date = new Date(2018,8,0,0,0,0,0)// month counst from 0 not 1. 
+	 		results = await tmatches.insert_singles_match(db_US_Open, tbv_tennis_matches, winer_id, [6,7,6], opponent_id, [3,6,4], date );
+	 		assert(results.length == 3); // one match two edges.
+	 	}
+	 	catch(err){
+	 		console.log(err);
+	 		assert(0);
+	 	}  
+	 }); 
+	it('Find a single match "Federer"', async() => { 
+		try{ 
+			let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+			let player_id = get_id(_players, "Roger Federer"); assert(player_id);  
+			let G = await tmatches.find_matches_G(db_Australian_Open, tbv_tennis_matches, player_id, new Date(2016,0), new Date(2018,11));  
+			assert(Object.keys(G.VE).length >0); // one match + two score edges + two players;
 
-	// it('Test find a single match "Federer" vs "Nadal" ', async() => { 
-	// 	try{ 
-	// 		let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
-	// 		let G = await tmatches.find_matches_G(db_Australian_Open, tbv_tennis_matches, _players[0]._id, match_date_2016_Aug, match_date_2016_Aug);  
-	// 		assert(Object.keys(G.VE).length == 5); // one match + two score edges + two players;
-
-	// 		//console.log(JSON.stringify(G.VE));
-	// 	}
-	// 	catch(err){
-	// 		console.log(err);
-	// 		assert(0);
-	// 	}  
-	// }); 
+			//console.log(JSON.stringify(G.VE));
+		}
+		catch(err){
+			console.log(err);
+			assert(0);
+		}  
+	}); 
 });
