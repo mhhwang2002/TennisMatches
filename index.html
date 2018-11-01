@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lange="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=0.65,user-scale=1.0,user-scalable=yes">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="mvc_view/handlebars-v4.0.11.js"></script>
+    <script src="mvc_view/Chart.js"></script> 
+    <script type="text/javascript" language="javascript">
+       function L_compileHTML(HandlebarScript, HandleBarData) { 
+            let theTemplate = Handlebars.compile (HandlebarScript); 
+            let htmlResult = theTemplate(HandleBarData);
+            return htmlResult;
+        };
+        $(document).ready(function() {
+            $('.loading').hide(); 
+            $(document).bind( "mobileinit", function(event) {
+               $.extend($.mobile.zoom, {locked:false,enabled:true});
+            });
+            var params = {}; // {Korean_name:"", first_name:"", last_name:""}
+            $.ajax({
+                'async': true,  'type': "POST",  'global': false, 'dataType': 'html',
+                'url': "/Search_Players",  'data': params,
+                'success': function (data) {
+                    G_playerList = eval(data); 
+                    $.get('mvc_view/PlayerTable.hbs', function (HandlebarScript) {  
+                        let HandleBarData = {Player:G_playerList, edit:false/*true*/, active_options:[0,1]}
+                        let table = L_compileHTML(HandlebarScript, HandleBarData);
+                        $("#PlayerIDsTableCont").empty();
+                        $("#Summary").empty(); 
+                        //document.getElementById('ChartContent').innerHTML='&nbsp;';// clean 
+                        $(table).appendTo("#PlayerIDsTableCont");
+                    }, 'html'); 
+                },
+                'error': function (data) {
+                    console.log(data);
+                    $("#PlayerIDsTableCont").append("<div>"+data+"</div>");
+                }
+            });  
+
+            $("#search_player_matches_btn").click(function(event){
+            //alert("search_player_matches_btn!"); 
+            var start_date =  $('#start_date').val();
+            var end_date = $('#end_date').val();
+            var playerId = $('#PlayerId').val();
+            if(start_date<=end_date) {
+                var params = $('#search_player_matches').serialize(); 
+                $('.loading').show(); // show loading image 
+                $.ajax({
+                    'async': true, /* otherwise, we could not see loading image */
+                    'type': "POST",
+                    'global': false,
+                    'dataType': 'html',
+                    'url': "/Search_Matches_Of_Player",
+                    'data': params, 
+                    complete: function(){
+                        $('.loading').hide(); // hid loading image 
+                    },
+                    'success': function (data) {
+                        console.log(data);
+                        
+/*                      var matchVEArray = eval(data);  
+                        var Gmatch = M_makeGraph(matchVEArray, G_id, G_src, G_dst); 
+                        console.log("################ Given Player's Maches within Dates ##############")
+                        Gmatch.printGraphStructure();
+
+                        var table=L_makeMatchTable(Gmatch, playerId, G_playerList);
+                        $("#TableCont").empty();
+                        $("#TableCont").html(table);
+                        var summary = L_makeSummaryTable(Gmatch, playerId);
+                        $("#Summary").empty();
+                        $("#Summary").html(summary); 
+                        lineChartData = M_makeChartDataInYearMonth(Gmatch, playerId); // M_makeChartDataInMonthAverage(Gmatch, playerId); 
+                        document.getElementById('ChartContent').innerHTML='&nbsp;';// clean 
+                        if(lineChartData && lineChartData.labels && lineChartData.labels.length>0) {
+                           // var tablewidth = $("#TableCont").css('width'); // return width in pixel.
+                            $('#ChartContent').width('100%'); // 40em seems to be about the table size 
+                            $('#ChartContent').append('<canvas id="lineChart"><canvas>'); 
+                            var ctx = $("#lineChart").get(0).getContext("2d");         
+                            window.myLine = new Chart(ctx).Line(lineChartData, {responsive: true, trigger:'none'});
+                        } 
+*/
+                    }
+                }); // ajax call 
+            } // if 
+            else
+                alert("invalid start date and end date!");
+        });
+        });  // $(document).ready(function() { 
+    
+
+        
+  
+    </script>   
+</head>
+
+<body> 
+    <div data-role="header" data-theme="b"><h1>Grand Slam Double Finals</h1></div> 
+<form id="search_player_matches">  
+    <div data-role="fieldcontain">
+        <!--a href="/insert_matches.html" target="_blank">Admin</a-->
+        <input type="hidden" name="SrcTableName" value="v_member">
+        <!--label for="name">Player ID: </label-->
+        <input type="text" name="PlayerId" id="PlayerId" placeholder="Input Player ID or Leave Blank for all Matches"> 
+    <!--/div>   
+    <div data-role="fieldcontain"--> 
+        <fieldset data-role="controlgroup" data-type="horizontal">
+            <label for="start_date">Start Date</label>
+            <select name="start_date" id="start_date">
+              <option value="2016-09-01 00:00:00" selected>2016-09-01</option>
+              <option value="2015-09-01 00:00:00">2015-09-01</option>
+              <option value="2014-09-01 00:00:00">2014-09-01</option>
+              <option value="2013-09-01 00:00:00">2013-09-01</option>
+              <option value="2012-09-01 00:00:00">2012-09-01</option>
+            </select>
+            <label for="end_date">End Date</label>
+            <select name="end_date" id="end_date">
+              <option value="2017-06-01 23:59:59" selected>2017-06-01</option>
+              <option value="2016-06-01 23:59:59">2016-06-01</option>
+              <option value="2015-06-01 23:59:59">2015-06-01</option>
+              <option value="2014-06-01 23:59:59">2014-06-01</option>
+              <option value="2013-06-01 23:59:59">2013-06-01</option> 
+            </select>
+        </fieldset>
+    </div>
+    <div data-role="main" class="ui-content">
+        <input type="button" data-theme="b" id="search_player_matches_btn" value="Search Matches" />
+    </div>
+</form>
+<hr>
+    <div data-role="main" class="ui-content">
+        <div data-role="collapsible" data-theme="b" >
+          <h1>Player IDs</h1>
+          <div id="PlayerIDsTableCont"></div>
+        </div>
+    </div>  
+
+    <!--div data-role="footer"-->
+    <div class="loading">Loading&#8230;</div>
+    <div id="Summary"> </div> 
+    <div id = "ChartContent"> </div> 
+    <div id="TableCont"></div>
+</body>
+</html>

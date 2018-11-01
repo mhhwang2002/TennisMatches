@@ -76,8 +76,8 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
     this.db_url = db_url, 
 	//this.print_out = (options && options.print_out)?options.print_out:false,
 	this.fname_stack=[], 
-	this.db_members=db_member_name, // member db 
-    this.tbv_members=table_member_name,   // member table 
+	this.db_players=db_member_name, // member db 
+    this.tbv_players=table_member_name,   // member table 
     this.tbe_players2matches=table_player2match_name, // player 2 match table
 
     /**
@@ -129,8 +129,8 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
                     throw "ERROR insert(DB="+db_name+", table="+match_table_name+")";
 
                 let matchID=inserted_match._id;
-                let player1E = {_src:{db:this.db_members, table:this.tbv_members, _id: player1_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1}; 
-                let player2E = {_src:{db:this.db_members, table:this.tbv_members, _id: player2_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2}; 
+                let player1E = {_src:{db:this.db_players, table:this.tbv_players, _id: player1_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1}; 
+                let player2E = {_src:{db:this.db_players, table:this.tbv_players, _id: player2_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2}; 
                 let edges = [player1E, player2E];
                 let results = await this.gdb.insertEdge(db_name, this.tbe_players2matches, edges) ;
                 if (results.ops.length != 2)
@@ -165,10 +165,10 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
                     throw "ERROR insert(DB="+db_name+", table="+match_table_name+")"; 
                 let matchID=inserted_match._id;
 
-                let player11E = {_src:{db:this.db_members, table:this.tbv_members, _id: player11_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1};
-                let player12E = {_src:{db:this.db_members, table:this.tbv_members, _id: player12_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1};
-                let player21E = {_src:{db:this.db_members, table:this.tbv_members, _id: player21_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2};
-                let player22E = {_src:{db:this.db_members, table:this.tbv_members, _id: player22_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2};
+                let player11E = {_src:{db:this.db_players, table:this.tbv_players, _id: player11_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1};
+                let player12E = {_src:{db:this.db_players, table:this.tbv_players, _id: player12_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1};
+                let player21E = {_src:{db:this.db_players, table:this.tbv_players, _id: player21_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2};
+                let player22E = {_src:{db:this.db_players, table:this.tbv_players, _id: player22_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2};
                 let edges = [player11E, player12E, player21E, player22E];
                 let results = await this.gdb.insertEdge(db_name, this.tbe_players2matches, edges) ;
                 if (results.ops.length != 4)
@@ -247,6 +247,68 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
         }
     }
 
+    this.getTwoTeamEdgeFromDoubleMatch = function(G, match, team1, team2)
+    {
+        let inE = G.getIncomingEdges(match);
+        if(inE.length == 4) {
+            let arrayIndices=[0,1,2,3]
+            for(let ii=0; ii<4; ii++) {
+                for(let jj=ii+1; jj<4; jj++) {
+                     if(this.IsScoreEqual(inE[ii].scores, inE[jj].scores)) {
+                        team1.push(inE[ii]); team1.push(inE[jj]);
+                        for(let kk=0; kk<4; kk++) {
+                            if(kk == ii || kk == jj)
+                                continue;
+                            else 
+                                team2.push(inE[kk]);
+                        }
+                        break;
+                    }
+                }
+            } 
+        }
+    }
+
+    this.IsScoresEqual = function(score1, score2)
+    {
+        if(score1.length != score1.length)
+            return false;
+        for(let ii in score1) {
+            if(score1[ii] != score1[ii])
+                return false;
+        }
+        return true;
+    }
+
+    this.checkIfDoubleMatchExists = async function(db_name, match_table_name, matchdate, player1_id, player2_id, score1, oppoent1_id, oppoent2_id, score2)
+    {
+        try{
+            //let this.client = await MongoClient.connect(this.db_url, { useNewUrlParser: true});
+            //let this.gdb = new MG.Graph(this.client,{print_out:true});
+            let answer = false;
+            this.gdb.begin_profiling("checkIfMatchExists");
+                let G =  await this.find_doubles_matches_G(db_name, match_table_name,player1_id, player2_id, oppoent1_id, oppoent2_id, matchdate, matchdate); 
+                let matches = G.getOutgoingEdgeDestinations(player1_id);   
+                for(let mi in matches){
+                    let match = matches[mi]; 
+                    let team1=[], team2=[];
+                    this.getTwoTeamEdgeFromDoubleMatch(G, match, team1, team2)
+                    if(team1.length==2 && team2.length == 2) {
+                        if(this.IsScoresEqual(team1[0].scores,score1) && this.IsScoresEqual(team1[1].scores,score2) ||
+                           this.IsScoresEqual(team1[0].scores,score2) && this.IsScoresEqual(team1[1].scores,score1)) {
+                            answer = true;
+                            break;
+                        }                            
+                    }
+                }   
+            this.gdb.end_profiling();
+            return answer;  
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
     /**
     *
     */
@@ -267,9 +329,9 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
                     let OldDoc = results[ii];
                     let NewDoc = {};
                     if(ii==0)
-                        NewDoc = {_src:{db:this.db_members, table:this.tbv_members, _id: player1_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores1}; 
+                        NewDoc = {_src:{db:this.db_players, table:this.tbv_players, _id: player1_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores1}; 
                     else 
-                        NewDoc = {_src:{db:this.db_members, table:this.tbv_members, _id: player2_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores2}; 
+                        NewDoc = {_src:{db:this.db_players, table:this.tbv_players, _id: player2_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores2}; 
                     let result = await this.gdb.update(db_name, this.tbe_players2matches, {_id:OldDoc._id}, NewDoc);
                     //console.log("ii="+ii+", result(playerScoreEdge)=", result); 
                 }  
@@ -303,13 +365,13 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
                     let OldDoc = results[ii];
                     let NewDoc = {};
                     if(ii==0)
-                        NewDoc = {_src:{db:this.db_members, table:this.tbv_members, _id: player11_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores1}; 
+                        NewDoc = {_src:{db:this.db_players, table:this.tbv_players, _id: player11_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores1}; 
                     else if(ii==1)
-                        NewDoc = {_src:{db:this.db_members, table:this.tbv_members, _id: player12_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores1}; 
+                        NewDoc = {_src:{db:this.db_players, table:this.tbv_players, _id: player12_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores1}; 
                     else if(ii==2)
-                        NewDoc = {_src:{db:this.db_members, table:this.tbv_members, _id: player21_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores2}; 
+                        NewDoc = {_src:{db:this.db_players, table:this.tbv_players, _id: player21_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores2}; 
                     else  
-                        NewDoc = {_src:{db:this.db_members, table:this.tbv_members, _id: player22_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores2}; 
+                        NewDoc = {_src:{db:this.db_players, table:this.tbv_players, _id: player22_id}, _dst:{db:db_name, table:match_table_name, _id: match_id}, scores:scores2}; 
                     let result = await this.gdb.update(db_name, this.tbe_players2matches, {_id:OldDoc._id}, NewDoc);
                     //console.log("ii="+ii+", result(playerScoreEdge)=", result); 
                 }  

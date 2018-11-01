@@ -1,0 +1,20 @@
+<table border=1 text-align="center" vertical-align="middle">
+{{#unless edit}}
+    <tr> <th>Player ID</th>  <th>Player Name</th> </tr>                {{!-- table header --}} 
+    {{#each Player as |val key| }}
+       <tr><td>{{val._id}}</td> <td>{{val.name}}</td></tr> {{!-- player._id  player.name --}} 
+    {{/each}} 
+{{else}}
+   <tr> <th>Player ID</th>  <th>Player Name</th>  <th>Active</th>  <th>Edit</th></tr>  {{!-- table header --}} 
+    {{#each Player as |val key| }}
+      <tr><td>{{val._id}}</td> <td>{{val.name}}</td> 
+        <td> <select id="active{{val._id}}"> 
+            {{#each ../active_options as |ov oi|}} 
+               <option value="{{ov}}" {{#if val.Active}} selected {{/if}}> {{ov}} </option> 
+            {{/each}} </select> 
+        </td>
+        <td> <button type="button" onclick="PlayerEditSubmit('{{val.id}}')">Submit</input></td>
+      </tr> {{!-- player._id  player.name --}} 
+    {{/each}}
+{{/unless}} 
+</table>

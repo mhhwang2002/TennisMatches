@@ -15,8 +15,8 @@ function get_id(player_docs, player_name)
 	return null;
 }
 describe('Grand Slam Men\'s Finals', function(){  
- 	let db_members="Test_members";
-	let tbv_members="members";
+ 	let db_players="Test_players";
+	let tbv_players="players";
 
 	let db_Australian_Open = "Australian_Open_Tennis";
 	let db_French_Open = "French_Open_Tennis";
@@ -33,7 +33,7 @@ describe('Grand Slam Men\'s Finals', function(){
 			let client = await MongoClient.connect(db_url, { useNewUrlParser: true});
 			let gdb = new MG.Graph(client, {print_out:true});
 			gdb.begin_profiling("Main"); 
-				await gdb.clearDB(db_members);   
+				await gdb.clearDB(db_players);   
 			    await gdb.clearDB(db_Australian_Open);  
 			    await gdb.clearDB(db_French_Open); 
 			    await gdb.clearDB(db_Wimbledon); 
@@ -56,10 +56,10 @@ describe('Grand Slam Men\'s Finals', function(){
 			let client = await MongoClient.connect(db_url, { useNewUrlParser: true});
 			let gdb = new MG.Graph(client, {print_out:true});
 			gdb.begin_profiling("Main");    
-			    let results = await gdb.insert(db_members, tbv_members, [{name:"Andy Murray"},{name:"Dominic Thiem"},{name:"Juan Martin del Potro"},
+			    let results = await gdb.insert(db_players, tbv_players, [{name:"Andy Murray"},{name:"Dominic Thiem"},{name:"Juan Martin del Potro"},
 			    	{name:"Kevin Anderson"}, {name:"Marin Cilic"}, {name:"Milos Raonic"}, {name:"Novak Djokovic"}, {name:"Rafael Nadal"},
 			    	{name:"Roger Federer"}, {name:"Stan Wawrinka"}]);
-			    results = await gdb.get(db_members, tbv_members, {});
+			    results = await gdb.get(db_players, tbv_players, {});
 				assert(results.length == 10);
 				for(let ii in results)
 					_players.push(results[ii]);
@@ -74,10 +74,10 @@ describe('Grand Slam Men\'s Finals', function(){
 		}
 	}); 
  
- 	let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+ 	let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 
  	it('Open Tennis DB Connection" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{  
 	 		let b_result = await tmatches.open_DB_connection();
 	 		assert(b_result);
@@ -93,7 +93,7 @@ describe('Grand Slam Men\'s Finals', function(){
 		2015 \tFrench Open \tStan Wawrinka  \tNovak Djokovic        \t4-6, 6-4, 6-3, 6-4\n \
 		2015 \tWimbledon   \tNovak Djokovic \tRoger Federer         \t7-6, 6-7, 6-4, 6-3\n \
 		2015 \tUP Open     \tNovak Djokovic \tRoger Federer         \t6-4, 5-7, 6-4, 6-4" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{ 
 	 		let winer_id = get_id(_players, "Novak Djokovic"); assert(winer_id); 
 	 		let opponent_id = get_id(_players, "Andy Murray"); assert(opponent_id);  
@@ -141,7 +141,7 @@ describe('Grand Slam Men\'s Finals', function(){
 		2016 \tFrench Open     \tNovak Djokovic \tAndy Murray           \t3-6, 6-1, 6-2, 6-4\n \
 		2016 \tWimbledon       \tAndy Murray    \tMilos Raonic          \t6-4, 7-6, 7-6\n \
 		2016 \tUS Open         \tStan Wawrinka  \tNovak Djokovic        \t6-7, 6-4, 7-5, 6-3" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{
 	 		let winer_id = get_id(_players, "Novak Djokovic"); assert(winer_id); 
 	 		let opponent_id = get_id(_players, "Andy Murray"); assert(opponent_id); 
@@ -182,7 +182,7 @@ describe('Grand Slam Men\'s Finals', function(){
 		2017 \tFrench Open     \tRafael Nadal   \tStan Wawrinka         \t6-2, 6-3, 6-1\n \
 		2017 \tWimbledon       \tRoger Federer  \tMarin CiliC           \t6-3, 6-1, 6-4\n \
 		2017 \tUS Open         \tRafael Nadal   \tKevin Anderson        \t6-3, 6-3, 6-4" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{
 	 		let winer_id = get_id(_players, "Roger Federer"); assert(winer_id); 
 	 		let opponent_id = get_id(_players, "Rafael Nadal"); assert(opponent_id); 
@@ -222,7 +222,7 @@ describe('Grand Slam Men\'s Finals', function(){
 		2018 \tFrench Open     \tRafael Nadal   \tDominic Thiem         \t6-4, 6-3, 6-2\n \
 		2018 \tWimbledon       \tNovak Djokovic \tKevin Anderson        \t6-2, 6-2, 7-6\n \
 		2018 \tUS Open         \tNovak Djokovic \tKevin Anderson \t6-3, 7-6, 6-4" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{
 	 		let winer_id = get_id(_players, "Roger Federer"); assert(winer_id); 
 	 		let opponent_id = get_id(_players, "Marin Cilic"); assert(opponent_id); 
@@ -256,7 +256,7 @@ describe('Grand Slam Men\'s Finals', function(){
 
 	it('Update 2018 Grand Slam Men\'s Finals \n \
 		2018 \tUS Open         \tNovak Djokovic \tJuan Martin del Potro \t6-3, 7-6, 6-4" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{ 
 	 		let winer_id = get_id(_players, "Novak Djokovic"); assert(winer_id); 
 	 		let opponent_id = get_id(_players, "Juan Martin del Potro"); assert(opponent_id);  
@@ -276,7 +276,7 @@ describe('Grand Slam Men\'s Finals', function(){
 
 	it('Find final matches of "Federer" in Grand Slams 2015 to 2018', async() => { 
 		try{ 
-			//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+			//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 			let player_id = get_id(_players, "Roger Federer"); assert(player_id);   
 			var GrandSlamDB = [db_Australian_Open, db_French_Open, db_Wimbledon, db_US_Open];
 			var GrandSlamFinals={}
@@ -308,7 +308,7 @@ describe('Grand Slam Men\'s Finals', function(){
 	}); 
 	it('Find final matches of "Federer" against "Djokovic" in Grand Slams 2015 to 2018', async() => { 
 		try{ 
-			//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+			//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 			let player_id = get_id(_players, "Roger Federer"); assert(player_id);   
 			let opponent_id = get_id(_players, "Novak Djokovic"); assert(opponent_id);   
 			var GrandSlamDB = [db_Australian_Open, db_French_Open, db_Wimbledon, db_US_Open];
@@ -341,7 +341,7 @@ describe('Grand Slam Men\'s Finals', function(){
 	}); 
 	it('Find final matches of Grand Slams 2015 to 2018', async() => { 
 		try{ 
-			//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches); 
+			//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches); 
 			var GrandSlamDB = [db_Australian_Open, db_French_Open, db_Wimbledon, db_US_Open];
 			var GrandSlamFinals={}
 			for(let ii in GrandSlamDB) {
@@ -373,7 +373,7 @@ describe('Grand Slam Men\'s Finals', function(){
 		}  
 	}); 
 	it('Close Tennis DB Connection" ', async() => {  
-		//let tmatches = new TM.TennisMatches(db_url, db_members, tbv_members, tbe_players2matches);
+		//let tmatches = new TM.TennisMatches(db_url, db_players, tbv_players, tbe_players2matches);
 	 	try{  
 	 		let b_result = await tmatches.close_DB_connection();
 	 		assert(b_result);
