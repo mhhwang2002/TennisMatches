@@ -60,7 +60,14 @@
                         $('.loading').hide(); // hid loading image 
                     },
                     'success': function (data) {
-                        console.log(data);
+                        console.log(typeof data);
+                        let matches = JSON.parse(data);
+                        if(typeof matches == 'object') {
+                            for(key in matches) {
+                                console.log(key);
+                                console.log(JSON.stringify(matches[key]));
+                            }
+                        }
                         
 /*                      var matchVEArray = eval(data);  
                         var Gmatch = M_makeGraph(matchVEArray, G_id, G_src, G_dst); 

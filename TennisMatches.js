@@ -63,6 +63,7 @@ TM.getPlayerGraph = function(playerId, allMatchesG)
   return answerG;
 }
 
+
 const MG = require("@mhhwang2002/MongoGraph");
 const MongoClient = require('mongodb').MongoClient ;
 const SINGLES="SG";
@@ -165,10 +166,10 @@ TM.TennisMatches = function(db_url, db_member_name, table_member_name, table_pla
                     throw "ERROR insert(DB="+db_name+", table="+match_table_name+")"; 
                 let matchID=inserted_match._id;
 
-                let player11E = {_src:{db:this.db_players, table:this.tbv_players, _id: player11_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1};
-                let player12E = {_src:{db:this.db_players, table:this.tbv_players, _id: player12_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1};
-                let player21E = {_src:{db:this.db_players, table:this.tbv_players, _id: player21_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2};
-                let player22E = {_src:{db:this.db_players, table:this.tbv_players, _id: player22_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2};
+                let player11E = {_src:{db:this.db_players, table:this.tbv_players, _id: player11_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1, team:'A'};
+                let player12E = {_src:{db:this.db_players, table:this.tbv_players, _id: player12_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores1, team:'A'};
+                let player21E = {_src:{db:this.db_players, table:this.tbv_players, _id: player21_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2, team:'B'};
+                let player22E = {_src:{db:this.db_players, table:this.tbv_players, _id: player22_id}, _dst:{db:db_name, table:match_table_name, _id: matchID}, scores:scores2, team:'B'};
                 let edges = [player11E, player12E, player21E, player22E];
                 let results = await this.gdb.insertEdge(db_name, this.tbe_players2matches, edges) ;
                 if (results.ops.length != 4)

@@ -15,13 +15,13 @@ function get_id(player_docs, player_name)
 	return null;
 }
 describe('Grand Slam Men\'s Finals', function(){  
- 	let db_players="Test_players";
+ 	let db_players="Test_Singles_players";
 	let tbv_players="players";
 
-	let db_Australian_Open = "Australian_Open_Tennis";
-	let db_French_Open = "French_Open_Tennis";
-	let db_Wimbledon = "Wimbledon_Tennis";
-	let db_US_Open = "US_Open_Tennis";
+	let db_Australian_Open = "Australian_Open_Tennis_Singles";
+	let db_French_Open = "French_Open_Tennis_Singles";
+	let db_Wimbledon = "Wimbledon_Tennis_Singles";
+	let db_US_Open = "US_Open_Tennis_Singles";
 
     let tbv_tennis_matches = "matches"; 
     let tbe_players2matches = "players2matches";

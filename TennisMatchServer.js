@@ -7,13 +7,13 @@ const MongoClient = require('mongodb').MongoClient ;
 const MG = require("@mhhwang2002/MongoGraph");
 const TM = require("./TennisMatches");
 
-let db_players="Test_players";
+let db_players="Test_Doubles_players";
 let tbv_players="players";
 
-let db_Australian_Open = "Australian_Open_Tennis";
-let db_French_Open = "French_Open_Tennis";
-let db_Wimbledon = "Wimbledon_Tennis";
-let db_US_Open = "US_Open_Tennis";
+let db_Australian_Open_Ds = "Australian_Open_Tennis_Doubles";
+let db_French_Open_Ds = "French_Open_Tennis_Doubles";
+let db_Wimbledon_Ds = "Wimbledon_Tennis_Doubles";
+let db_US_Open_Ds = "US_Open_Tennis_Doubles";
 
 let tbv_tennis_matches = "matches"; 
 let tbe_players2matches = "players2matches";
@@ -36,15 +36,48 @@ app.post('/Search_Players', async (req, res, next) => {
     }
 });
 
-function M_getDoublesMatches(G){
+function arraysEqual(arr1, arr2) {
+    if(arr1.length !== arr2.length)
+        return false;
+    for(var i = arr1.length; i--;) {
+        if(arr1[i] !== arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+function M_getTwoTeams(players){
+    let teams=[];
+    if( players.length == 4) {
+        if(players[0].team == players[1].team) {
+            teams.push([players[0], players[1]]);
+            teams.push([players[2], players[3]]);
+        } else if(players[0].team == players[2].team) {
+            teams.push([players[0], players[2]]);
+            teams.push([players[1], players[3]]);
+        } else if(players[0].team == players[3].team) {
+            teams.push([players[0], players[3]]);
+            teams.push([players[1], players[2]]);
+        } else {
+            console.log(JSON.stringify(players));
+            console.log("################ ERROR: Same team doesn't exists ##########");
+        }
+    }
+    return teams;
+}
+function M_getReadableDoublesMatches(G){
     let matches = G.getVtxs(function(entity) { return entity.date?true:false;}); //note: a match vertice has date.  
     matches.sort(function(a,b)  { // sort by date 'descending' 
         if (a.date < b.date) return 1;
         else if (a.date > b.date) return -1;
         else {
-            if(Number(a.id) < Number(b.id)) return 1; // comparing in number for 9 < 10. 
-             else if(Number(a.id) > Number(b.id)) return -1;
-                else return 0;
+            if(Number(a.id) < Number(b.id)) // comparing in number for 9 < 10. 
+                return 1;  // less                     
+             else if(Number(a.id) > Number(b.id)) 
+                return -1; // greater 
+            else 
+                return 0; // tie
         }
     });
 
@@ -59,10 +92,10 @@ function M_getDoublesMatches(G){
             let edge = inE[ei];
             let player = G.getEdgeSource(edge); 
             console.log("\t Player=", player.name, ", Score=", edge.scores);
-            players.push({name:player.name, scores:edge.scores});
+            players.push({name:player.name, scores:edge.scores, team:edge.team});
         }
 
-        readable_match["players"]=players;
+        readable_match["players"]=M_getTwoTeams(players);
         readable_matches.push(readable_match);
     }
 
@@ -80,7 +113,7 @@ app.post('/Search_Matches_Of_Player', async (req, res, next) =>{
         await tmatches.open_DB_connection();
 
         let startDate = new Date(2015,0);  let endDate = new Date(2018,11);
-        let GrandSlamDB_names = [db_Australian_Open, db_French_Open, db_Wimbledon, db_US_Open];
+        let GrandSlamDB_names = [db_Australian_Open_Ds, db_French_Open_Ds, db_Wimbledon_Ds, db_US_Open_Ds];
         let GrandSlamFinals={}
         for(let ii in GrandSlamDB_names) {
             let db_names = GrandSlamDB_names[ii];
@@ -95,7 +128,7 @@ app.post('/Search_Matches_Of_Player', async (req, res, next) =>{
         for (let db_name in GrandSlamFinals) {
             console.log("################ <" + db_name + "> ####################");
             let G = GrandSlamFinals[db_name]; 
-            let matches = M_getDoublesMatches(G);
+            let matches = M_getReadableDoublesMatches(G);
             total_matches[db_name] = matches;
             console.log("################# End of <" + db_name + "> ######################");
         }
