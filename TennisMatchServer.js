@@ -85,7 +85,7 @@ function M_getReadableDoublesMatches(G){
     for(let mi in matches) { 
         let matchvtx = matches[mi]; 
         console.log(" Final Macht=", matchvtx);
-        let readable_match={date:matchvtx['date']}; 
+       
         let inE = G.getIncomingEdges(matchvtx); 
         let players=[];
         for(let ei in inE) {
@@ -94,8 +94,9 @@ function M_getReadableDoublesMatches(G){
             console.log("\t Player=", player.name, ", Score=", edge.scores);
             players.push({name:player.name, scores:edge.scores, team:edge.team});
         }
-
-        readable_match["players"]=M_getTwoTeams(players);
+        let teams = M_getTwoTeams(players);
+        let readable_match={id: matchvtx._id, date:matchvtx.date, player11_name:teams[0][0].name, player12_name:teams[0][1].name, score1: teams[0][0].scores,
+                            score2: teams[1][0].scores, player21_name:teams[1][0].name, player22_name:teams[1][1].name}; 
         readable_matches.push(readable_match);
     }
 

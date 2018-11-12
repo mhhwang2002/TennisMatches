@@ -26,18 +26,17 @@
                 'url': "/Search_Players",  'data': params,
                 'success': function (data) {
                     G_playerList = eval(data); 
-                    $.get('mvc_view/PlayerTable.hbs', function (HandlebarScript) {  
-                        let HandleBarData = {Player:G_playerList, edit:false/*true*/, active_options:[0,1]}
-                        let table = L_compileHTML(HandlebarScript, HandleBarData);
-                        $("#PlayerIDsTableCont").empty();
+                    $.get('mvc_view/PlayerTable.hbs', function (HandlebarScript) {   
+                        let table = L_compileHTML(HandlebarScript, {Player:G_playerList});
+                        $("#PlayerIDsMatchTable").empty();
                         $("#Summary").empty(); 
                         //document.getElementById('ChartContent').innerHTML='&nbsp;';// clean 
-                        $(table).appendTo("#PlayerIDsTableCont");
+                        $(table).appendTo("#PlayerIDsMatchTable");
                     }, 'html'); 
                 },
                 'error': function (data) {
                     console.log(data);
-                    $("#PlayerIDsTableCont").append("<div>"+data+"</div>");
+                    $("#PlayerIDsMatchTable").append("<div>"+data+"</div>");
                 }
             });  
 
@@ -62,28 +61,37 @@
                     'success': function (data) {
                         console.log(typeof data);
                         let matches = JSON.parse(data);
-                        if(typeof matches == 'object') {
-                            for(key in matches) {
-                                console.log(key);
-                                console.log(JSON.stringify(matches[key]));
-                            }
+                        if(typeof matches == 'object') {  
+                            $("#MatchTable").empty();
+                            $("#Summary").empty();  
+                            $.get('mvc_view/MatchTable.hbs', function (HandlebarScript) {   
+                                for(name in matches) {
+                                    console.log(name);
+                                    console.log(JSON.stringify(matches[name]));
+                                    let table = L_compileHTML(HandlebarScript, {Match:matches[name]}); 
+                                    //document.getElementById('ChartContent').innerHTML='&nbsp;';// clean 
+                                    $("#MatchTable").append("<p>"+name+"</p>");
+                                    $(table).appendTo("#MatchTable");
+                                    $("#MatchTable").append("<hr>");
+                                } 
+                            }, 'html');  
                         }
-                        
+                       
 /*                      var matchVEArray = eval(data);  
                         var Gmatch = M_makeGraph(matchVEArray, G_id, G_src, G_dst); 
                         console.log("################ Given Player's Maches within Dates ##############")
                         Gmatch.printGraphStructure();
 
                         var table=L_makeMatchTable(Gmatch, playerId, G_playerList);
-                        $("#TableCont").empty();
-                        $("#TableCont").html(table);
+                        $("#MatchTable").empty();
+                        $("#MatchTable").html(table);
                         var summary = L_makeSummaryTable(Gmatch, playerId);
                         $("#Summary").empty();
                         $("#Summary").html(summary); 
                         lineChartData = M_makeChartDataInYearMonth(Gmatch, playerId); // M_makeChartDataInMonthAverage(Gmatch, playerId); 
                         document.getElementById('ChartContent').innerHTML='&nbsp;';// clean 
                         if(lineChartData && lineChartData.labels && lineChartData.labels.length>0) {
-                           // var tablewidth = $("#TableCont").css('width'); // return width in pixel.
+                           // var tablewidth = $("#MatchTable").css('width'); // return width in pixel.
                             $('#ChartContent').width('100%'); // 40em seems to be about the table size 
                             $('#ChartContent').append('<canvas id="lineChart"><canvas>'); 
                             var ctx = $("#lineChart").get(0).getContext("2d");         
@@ -141,7 +149,7 @@
     <div data-role="main" class="ui-content">
         <div data-role="collapsible" data-theme="b" >
           <h1>Player IDs</h1>
-          <div id="PlayerIDsTableCont"></div>
+          <div id="PlayerIDsMatchTable"></div>
         </div>
     </div>  
 
@@ -149,6 +157,6 @@
     <div class="loading">Loading&#8230;</div>
     <div id="Summary"> </div> 
     <div id = "ChartContent"> </div> 
-    <div id="TableCont"></div>
+    <div id="MatchTable"></div>
 </body>
 </html>
