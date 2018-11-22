@@ -1,10 +1,11 @@
 <table border=1 text-align="center" vertical-align="middle">
     <tr> {{!-- header --}} 
-    <th>ID</th><th>Date</th><th>Player1-1</th><th>Player1-2</th><th colspan='2'>Scores</th><th>Player2-1</th><th>Player2-2</th> 
+    <th>ID</th><th>Date</th><th colspan="2">Players</th><th>Scores</th>
     </tr>
     {{#each Match as |val key| }}
-       <tr><td>{{val.id}}</td> <td>{{val.date}}</td><td>{{{val.player11_name}}}</td><td>{{{val.player12_name}}}</td>
-           <td>{{val.score1}}</td> <td>{{val.score2}}</td> <td>{{{val.player21_name}}}</td><td>{{{val.player22_name}}}</td>
+       <tr><td rowspan="2">{{val.id}}</td> <td rowspan="2">{{val.date}}</td><td>{{{val.player11_name}}}</td><td>{{{val.player12_name}}}</td>
+           <td>{{val.score1}}</td> </tr>
+        <tr><td>{{{val.player21_name}}}</td><td>{{{val.player22_name}}}</td> <td>{{val.score2}}
        </tr>  
     {{/each}} 
 </table>
